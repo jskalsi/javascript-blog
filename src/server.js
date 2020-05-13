@@ -1,4 +1,4 @@
-import express, { response } from 'express';
+import express from 'express';
 import bodyParser from 'body-parser';
 import {Article} from '../models/Article';
 import path from 'path';
@@ -44,7 +44,9 @@ app.post('/api/article/:id/upvote', (req, res) => {
     .catch(error=>res.status(500).send(error))
 })
 
-app.post('/api/article/:id/add-comment', (req,res) => {
+const {commentValidator} = require('../validators/validator');
+
+app.post('/api/article/:id/add-comment', commentValidator, (req,res) => {
     const {username, text} = req.body;
 
     Article.findOne({_id:req.params.id})
@@ -56,7 +58,9 @@ app.post('/api/article/:id/add-comment', (req,res) => {
     .catch(error=>res.status(500).send(error))
 })
 
-app.post('/api/article/create', (req,res) => {
+const {articleValidator} = require('../validators/validator');
+
+app.post('/api/article/create', articleValidator, (req,res) => {
     let article = new Article(req.body);
 
     article.save()
